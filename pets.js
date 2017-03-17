@@ -8,11 +8,13 @@ const file = path.basename(process.argv[1]);
 const cmd = process.argv[2];
 const index = process.argv[3]
 
+//check to see if the terminal command has "read" as the third part of it ($node pets.js read)
  if (cmd === 'read') {
    fs.readFile("pets.json", 'utf8', (err, data) => {
      if (err) {
        throw err;
      }
+     //check to see if args[3] exists
      else if (index < 0 || index > JSON.parse(data).length-1) {
        console.log(`USAGE node pets.js read INDEX`);
        process.exit(1);
