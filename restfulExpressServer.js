@@ -23,22 +23,15 @@ app.get('/pets', function(req, res, next) {
    })
 })
 
-app.get('/pets/1', function(req, res, next) {
-   fs.readFile(pathArray, 'utf8', function (err, data){
-      if (err) throw err;
-      res.send(JSON.parse(data)[1])
-   })
-})
-
 app.get('/pets/:index', function(req, res) {
-     fs.readFile(pathArray, 'utf8', function (err, data){
-       var index = Number.parseInt(req.params.index);
-
-       if (Number.isNaN(index) || index < 0 || index > data.length - 1 || index === undefined || index === '') {
-         return res.sendStatus(404);
-       }
-       res.send(data[index]);
-     })
+    var index = Number.parseInt(req.params.index);
+    fs.readFile('pets.json', 'utf8', (err, data) => {
+        let parsedData = JSON.parse(data)
+        if (Number.isNaN(index) || index < 0 || index >= parsedData.length) {
+            return res.sendStatus(404);
+        }
+        res.send(parsedData[index]);
+    })
 });
 
 app.post('/pets', function(req, res, next){
@@ -92,7 +85,7 @@ app.patch('/pets/1', function(req, res, next){
 app.delete('/pets/:index', function(req, res) {
   fs.readFile(pathArray, 'utf8', function (err, data){
      if (err) throw err;
-     var index = Number.parseInt(req.params.index);
+     var index = req.params.index;
 
      if (Number.isNaN(index) || index < 0 || index >= data.length) {
        return res.sendStatus(404);
