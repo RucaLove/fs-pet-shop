@@ -83,17 +83,20 @@ app.patch('/pets/1', function(req, res, next){
 })
 
 app.delete('/pets/:index', function(req, res) {
-  fs.readFile(pathArray, 'utf8', function (err, data){
-     if (err) throw err;
-     var index = req.params.index;
-
-     if (Number.isNaN(index) || index < 0 || index >= data.length) {
-       return res.sendStatus(404);
-     }
-     var pet = JSON.parse(data)
-     pet = pet.splice(index, 1);
-    res.send(pet);
-  })
+    fs.readFile(pathArray, 'utf8', function(err, data) {
+        if (err) throw err;
+        let index = Number.parseInt(req.params.index)
+        var pet = JSON.parse(data)
+        if (Number.isNaN(index) || index < 0 || index >= pet.length) {
+            return res.sendStatus(404);
+        }
+        let deletedPet = pet.splice(index, 1);
+        let petJson = JSON.stringify(deletedPet)
+        fs.writeFile(pathArray, petJson, (writeErr) => {
+            if (writeErr) throw writeErr
+            res.send(deletedPet[0])
+        })
+    })
 });
 
 app.listen(app.get('port'), function() {
